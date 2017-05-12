@@ -1,5 +1,8 @@
 import React,{Component} from 'react';
 import GoogleMap from './google_maps';
+import {connect} from 'react-redux';
+import {selectLocation} from '../actions/index';
+import {bindActionCreators} from 'redux';
 
 
 class SelectBar extends Component{
@@ -7,31 +10,34 @@ class SelectBar extends Component{
     constructor(props){
         super(props);
 
-        this.state = {location:'台北101'};
+        this.state = {location:'0'};
     }
 
+  onSelectChange(location){
+     this.setState({ location: location });
+     this.props.selectLocation(location);
+     //this.props.selectLocation(this.state.location); >>延遲
+  }
 
-
-    render() {
-              console.log(this.state.location);
-              
+    render() {      
         return(
-        <form>
-          <select className="form-group" onChange={event => this.onSelectChange(event.target.value)}>         
-　          <option value="台北101">台北101</option>
-　          <option value="台北火車站">台北火車站</option>
-　          <option value="台北科技大學">台北科技大學</option>
+        <form  className="input-select">
+          <select className="form-control" value={this.state.location} onChange={event => this.onSelectChange(event.target.value)}>
+          <option value="0">請選擇</option>                               
+          <option value="台北101">台北101</option>
+          <option value="台北火車站">台北火車站</option>
+          <option value="台北科技大學">台北科技大學</option>
           </select>
-        </form>  
-
+        </form> 
         );
     }
-    
-    onSelectChange(location){
-    this.setState({location:location});
-    }
-
-
 }
 
-export default SelectBar;
+function mapDispatchToProps(dispatch){
+    return bindActionCreators({selectLocation}, dispatch);
+}
+
+
+
+export default connect (null,mapDispatchToProps)(SelectBar);
+

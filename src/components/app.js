@@ -4,11 +4,16 @@ import SimpleMapExample from './google_maps';
 
 
 export default class App extends Component {
+  constructor(props){
+    super(props)
+
+  }
+
   render() {
     return (
       <div>
         <SimpleMapExample />
-        <SelectBar />
+        <SelectBar />    
       </div>     
     );
   }

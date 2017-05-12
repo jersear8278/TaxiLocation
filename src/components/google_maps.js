@@ -6,20 +6,43 @@ import {
 import {
   withGoogleMap,
   GoogleMap,
+  InfoWindow,
+  Marker,
 } from "react-google-maps/lib";
+
+import {connect} from 'react-redux';
 
 
 const SimpleMapExampleGoogleMap = withGoogleMap(props => (
+
   <GoogleMap
-    defaultZoom={12}
-    defaultCenter={{ lat:24.778289, lng:120.988108 }}
-  />
+    defaultZoom={16}
+    defaultCenter={props.center}>
+    
+      <Marker
+        key={props.center}
+        position={props.center}
+        onClick={() => props.onMarkerClick(marker)}
+      >
+      </Marker>
+    
+
+    </GoogleMap>
 ));
 
 
  class SimpleMapExample extends Component {
+   constructor(props){
+     super(props)
+   }
 
   render() {
+    console.log(this.props.center)
+
+            if(!this.props.center){
+            return <div>Select a book to get started.</div>;
+            //定位
+        }
     return (
       <SimpleMapExampleGoogleMap
         containerElement={
@@ -28,10 +51,19 @@ const SimpleMapExampleGoogleMap = withGoogleMap(props => (
         mapElement={
           <div style={{ height: '100%' }} />
         }
+        center={this.props.center} 
       />
     );
   }
 }
 
-export default SimpleMapExample;
+
+function mapStateToProps (state){
+  return {
+    center:state.center,
+  };
+}
+
+
+export default connect (mapStateToProps)(SimpleMapExample);
 
