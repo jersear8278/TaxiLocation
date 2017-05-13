@@ -12,6 +12,8 @@ import {
 
 import {connect} from 'react-redux';
 
+import Geolocation from './geolocation';
+
 
 const SimpleMapExampleGoogleMap = withGoogleMap(props => (
 
