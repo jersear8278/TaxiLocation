@@ -12,7 +12,10 @@ import {
   Circle,
   InfoWindow, 
   Marker,
+  DirectionsRenderer,
 } from "react-google-maps/lib";
+
+import Direction from './directions';
 
 
 const geolocation = (
@@ -48,6 +51,8 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
         }}
       />
     )}
+
+    
           <Marker
         key={props.marker}
         position={props.marker}
@@ -61,14 +66,19 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
 
 class GeolocationExample extends Component {
 
+
   state = {
     center: null,
     content: null,
     radius: 6000,
+
   };
+
+
 
   isUnmounted = false;
 
+ 
   componentDidMount() {
     const tick = () => {
       if (this.isUnmounted) {
@@ -89,7 +99,8 @@ class GeolocationExample extends Component {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         },
-        content: `Location found using HTML5.`,
+        content: `Your location`,
+
       });
 
       raf(tick);
@@ -103,8 +114,11 @@ class GeolocationExample extends Component {
           lng: 105,
         },
         content: `Error: The Geolocation service failed (${reason}).`,
+
       });
     });
+
+
   }
 
   componentWillUnmount() {
@@ -112,6 +126,7 @@ class GeolocationExample extends Component {
   }
 
   render() {
+      if(!this.props.marker){
     return (
       <GeolocationExampleGoogleMap
         containerElement={
@@ -125,7 +140,11 @@ class GeolocationExample extends Component {
         radius={this.state.radius}
         marker={this.props.marker}
       />
-    );
+    );}
+
+    return <Direction lat={this.props.marker.lat} lng={this.props.marker.lng}
+                centerLat={this.state.center.lat} centerLng={this.state.center.lng}/>;
+
   }
 }
 

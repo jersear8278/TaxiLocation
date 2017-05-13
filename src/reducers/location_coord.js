@@ -1,5 +1,5 @@
 
-export default function (state =null, action){
+export default function (state = null, action){
   switch (action.type){
     case '台北火車站':
       return {lat:25.047751,lng:121.517038};
@@ -8,7 +8,7 @@ export default function (state =null, action){
     case '台北科技大學':
       return {lat:25.042244,lng:121.535481};
     case '0':
-      return {lat:25.033961,lng:121.564478};
+      return {lat:25.042244,lng:121.535481};
   }
 return state;
 }
