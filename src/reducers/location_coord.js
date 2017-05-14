@@ -8,7 +8,9 @@ export default function (state = null, action){
     case '台北科技大學':
       return {lat:25.042244,lng:121.535481};
     case '0':
-      return {lat:25.042244,lng:121.535481};
+      return null;
+    default:
+      return null;
   }
 return state;
 }

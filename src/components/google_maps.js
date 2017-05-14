@@ -20,7 +20,7 @@ const SimpleMapExampleGoogleMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={16}
     defaultCenter={props.center}>
-    
+
       <Marker
         key={props.center}
         position={props.center}
