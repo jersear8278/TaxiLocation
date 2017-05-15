@@ -30,7 +30,7 @@ const geolocation = (
 
 const GeolocationExampleGoogleMap = withGoogleMap(props => (
   <GoogleMap
-    defaultZoom={11}
+    defaultZoom={12}
     center={props.center}>
 
     {props.center && (
@@ -46,20 +46,51 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
       >
       </Marker>
 
+    {props.driverdetails.map((marker, index) => (
+      <Marker
+        key={index}
+        position={{lat:marker.lat,lng:marker.lng}}
+        onClick={() => props.onMarkerClick(marker)}
+      >
+        {/*
+          Show info window only if the 'showInfo' key of the marker is true.
+          That is, when the Marker pin has been clicked and 'onCloseClick' has been
+          Successfully fired.
+        */}
+        {marker.showInfo && (
+          <InfoWindow onCloseClick={() => props.onMarkerClose(marker)}>
+            <div>{marker.DriverName}</div>
+          </InfoWindow>
+        )}
+      </Marker>
+    ))}
+
+
+      {props.directions && <DirectionsRenderer directions={props.directions} />}
+
   </GoogleMap>
 ));
 
 
 class GeolocationExample extends Component {
 
-  state = {
-    center: null,
-    content: null,
-  };
+    constructor(props){
+        super(props);
+
+        this.  state = {
+          center: null,//origin
+          content: null,
+          origin:null,
+          directions: null,
+          A:this.props.driverdetails
+         };
+
+          this.handleMarkerClick = this.handleMarkerClick.bind(this);
+          this.handleMarkerClose = this.handleMarkerClose.bind(this);
+    }
 
  
   componentDidMount() {
-
     geolocation.getCurrentPosition((position) => {
 
       this.setState({
@@ -72,10 +103,55 @@ class GeolocationExample extends Component {
     });
   }
 
+  componentDidUpdate(){
+    var DirectionsService = new google.maps.DirectionsService();
 
+    if(this.props.marker){
+
+        DirectionsService.route({
+        origin: new google.maps.LatLng(this.state.center.lat,this.state.center.lng),
+        destination: new google.maps.LatLng(this.props.marker.lat,this.props.marker.lng),
+        travelMode: google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+            this.setState({
+            directions: result,
+            });
+        } 
+        });
+    }
+}
+
+  handleMarkerClick(targetMarker) {
+    this.setState({
+      A: this.state.A.map(marker => {
+        if (marker === targetMarker) {
+          return {
+            ...marker,
+            showInfo: true,
+          };
+        }
+        return marker;
+      }),
+    });
+  }
+
+  handleMarkerClose(targetMarker) {
+    this.setState({
+      A: this.state.A.map(marker => {
+        if (marker === targetMarker) {
+          return {
+            ...marker,
+            showInfo: false,
+          };
+        }
+        return marker;
+      }),
+    });
+  }
+  
 
   render() {
-      if(!this.props.marker){
     return (
       <GeolocationExampleGoogleMap
         containerElement={
@@ -86,13 +162,15 @@ class GeolocationExample extends Component {
         }
         center={this.state.center}
         content={this.state.content}
-        marker={this.props.marker}//Driver marker
+        marker={this.state.driverdetails}
+        lat={this.state.lat}//Driver marker
+        lng={this.state.lng}
+        directions={this.state.directions}
+        driverdetails={this.state.A}
+        onMarkerClick={this.handleMarkerClick}
+        onMarkerClose={this.handleMarkerClose}
       />
-    );}
-
-    return <Direction lat={this.props.marker.lat} lng={this.props.marker.lng}
-                centerLat={this.state.center.lat} centerLng={this.state.center.lng}/>;
-
+    );
   }
 }
 
@@ -100,6 +178,7 @@ class GeolocationExample extends Component {
 function mapStateToProps (state){
   return {
     marker:state.center,
+    driverdetails:state.driverdetails
   };
 }
 
