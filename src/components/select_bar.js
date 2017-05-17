@@ -1,5 +1,4 @@
 import React,{Component} from 'react';
-import GoogleMap from './google_maps';
 import {connect} from 'react-redux';
 import {selectLocation} from '../actions/index';
 import {bindActionCreators} from 'redux';

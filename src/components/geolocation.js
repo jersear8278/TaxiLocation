@@ -44,11 +44,13 @@ const GeolocationExampleGoogleMap = withGoogleMap(props => (
         position={props.center}
         onClick={() => props.onMarkerClick(marker)}
       >
+
       </Marker>
 
     {props.driverdetails.map((marker, index) => (
       <Marker
         key={index}
+        icon={{url:'img/taxi.png',scaledSize: new google.maps.Size(31, 43)}}
         position={{lat:marker.lat,lng:marker.lng}}
         onClick={() => props.onMarkerClick(marker)}
       >
@@ -77,12 +79,13 @@ class GeolocationExample extends Component {
     constructor(props){
         super(props);
 
-        this.  state = {
-          center: null,//origin
+        this.state = {
+          center: null,
           content: null,
           origin:null,
           directions: null,
-          A:this.props.driverdetails
+          A:this.props.driverdetails,
+          B:null
          };
 
           this.handleMarkerClick = this.handleMarkerClick.bind(this);
@@ -106,7 +109,7 @@ class GeolocationExample extends Component {
   componentDidUpdate(){
     var DirectionsService = new google.maps.DirectionsService();
 
-    if(this.props.marker){
+    if(this.props.marker&&this.state.B!=this.props.marker){
 
         DirectionsService.route({
         origin: new google.maps.LatLng(this.state.center.lat,this.state.center.lng),
@@ -116,6 +119,7 @@ class GeolocationExample extends Component {
         if (status === google.maps.DirectionsStatus.OK) {
             this.setState({
             directions: result,
+            B:this.props.marker
             });
         } 
         });
@@ -132,7 +136,7 @@ class GeolocationExample extends Component {
           };
         }
         return marker;
-      }),
+      })
     });
   }
 
