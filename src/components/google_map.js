@@ -7,7 +7,7 @@ import raf from "raf";
 import React,{Component} from "react";
 
 import {
-    GoogleMapLoader,
+  GoogleMapLoader,
   withGoogleMap,
   GoogleMap,
   Circle,
@@ -20,7 +20,7 @@ import Direction from './directions';
 
 import MarkerClusterer from "react-google-maps/lib/addons/MarkerClusterer";
 
-import C from './test';
+import DriverMarkers from './driver_markers';
 
 
 const geolocation = (
@@ -33,41 +33,34 @@ const geolocation = (
   })
 );
 
-
-
-
-const GeolocationExampleGoogleMap = withGoogleMap(props => (
+const GDMGoogleMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={12}
     center={props.center}
     onZoomChanged={props.onZoomChanged}
     ref={props.onMapMounted}
-    >
+  >
 
+      {props.center && (
+        <InfoWindow position={props.center}>
+          <div>{props.content}</div>
+        </InfoWindow>
+      )}
 
-    {props.center && (
-      <InfoWindow position={props.center}>
-        <div>{props.content}</div>
-      </InfoWindow>
-    )}
-
-       <Marker
+      <Marker
         key={props.center}
         position={props.center}
       >       
       </Marker>
 
-      <C Zoom={props.Zoom}/>
+      <DriverMarkers Zoom={props.Zoom}/>
 
       {props.directions && <DirectionsRenderer directions={props.directions} />}
 
   </GoogleMap>
 ));
 
-
-
 class GeolocationExample extends Component {
-
     constructor(props){
         super(props);
 
@@ -76,13 +69,12 @@ class GeolocationExample extends Component {
           content: null,
           origin:null,
           directions: null,
-          B:null,
+          exMarker:null,
           Zoom:12
          };
 
-
-        this.handleMapMounted = this.handleMapMounted.bind(this);
-            this.handleZoomChanged = this.handleZoomChanged.bind(this);
+      this.handleMapMounted = this.handleMapMounted.bind(this);
+      this.handleZoomChanged = this.handleZoomChanged.bind(this);
     }
 
  
@@ -102,25 +94,23 @@ class GeolocationExample extends Component {
   componentDidUpdate(){
     var DirectionsService = new google.maps.DirectionsService();
 
-    if(this.props.marker&&this.state.B!=this.props.marker){
-
+    if(this.props.marker&&this.state.exMarker!=this.props.marker){
         DirectionsService.route({
-        origin: new google.maps.LatLng(this.state.center.lat,this.state.center.lng),
-        destination: new google.maps.LatLng(this.props.marker.lat,this.props.marker.lng),
-        travelMode: google.maps.TravelMode.DRIVING,
-        }, (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
+          origin: new google.maps.LatLng(this.state.center.lat,this.state.center.lng),
+          destination: new google.maps.LatLng(this.props.marker.lat,this.props.marker.lng),
+          travelMode: google.maps.TravelMode.DRIVING,
+          }, (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
             this.setState({
-            directions: result,
-            B:this.props.marker
+              directions: result,
+              exMarker:this.props.marker
             });
-        } 
+          } 
         });
     }
-}
+  }
 
-
-handleMapMounted(map) {
+  handleMapMounted(map) {
     this._map = map;
   }
 
@@ -131,10 +121,10 @@ handleMapMounted(map) {
       });
   }
   
-
   render() {
     return (
-      <GeolocationExampleGoogleMap
+      <div>
+      <GDMGoogleMap
         containerElement={
           <div style={{ height: 500 }} />
         }
@@ -144,7 +134,7 @@ handleMapMounted(map) {
         center={this.state.center}
         content={this.state.content}
         marker={this.state.driverdetails}
-        lat={this.state.lat}//Driver marker
+        lat={this.state.lat}
         lng={this.state.lng}
         directions={this.state.directions}
         driverdetails={this.state.A}
@@ -152,7 +142,7 @@ handleMapMounted(map) {
         onZoomChanged={this.handleZoomChanged}
         Zoom={this.state.Zoom}
       />
-    
+      </div>
     );
   }
 }
@@ -160,10 +150,9 @@ handleMapMounted(map) {
 function mapStateToProps (state){
   return {
     marker:state.center,
-    driverdetails:state.driverdetails
+    driverdetails:state.driverdetails,
   };
 }
-
 
 export default connect (mapStateToProps)(GeolocationExample);
 

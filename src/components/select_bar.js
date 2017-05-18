@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {selectLocation} from '../actions/index';
 import {bindActionCreators} from 'redux';
 
-
 class SelectBar extends Component{
 
     constructor(props){
@@ -19,7 +18,7 @@ class SelectBar extends Component{
   }
 
     render() {      
-        return(
+      return(
         <form  className="input-select">
           <select className="form-control" value={this.state.location} onChange={event => this.onSelectChange(event.target.value)}>
           <option value="0">請選擇</option>                               
@@ -28,15 +27,13 @@ class SelectBar extends Component{
           <option value="台北科技大學">台北科技大學</option>
           </select>
         </form> 
-        );
+      );
     }
 }
 
 function mapDispatchToProps(dispatch){
     return bindActionCreators({selectLocation}, dispatch);
 }
-
-
 
 export default connect (null,mapDispatchToProps)(SelectBar);
 
