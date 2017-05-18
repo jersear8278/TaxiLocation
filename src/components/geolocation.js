@@ -7,6 +7,7 @@ import raf from "raf";
 import React,{Component} from "react";
 
 import {
+    GoogleMapLoader,
   withGoogleMap,
   GoogleMap,
   Circle,
@@ -16,6 +17,10 @@ import {
 } from "react-google-maps/lib";
 
 import Direction from './directions';
+
+import MarkerClusterer from "react-google-maps/lib/addons/MarkerClusterer";
+
+import C from './test';
 
 
 const geolocation = (
@@ -28,50 +33,37 @@ const geolocation = (
   })
 );
 
+
+
+
 const GeolocationExampleGoogleMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={12}
-    center={props.center}>
+    center={props.center}
+    onZoomChanged={props.onZoomChanged}
+    ref={props.onMapMounted}
+    >
+
 
     {props.center && (
       <InfoWindow position={props.center}>
         <div>{props.content}</div>
       </InfoWindow>
     )}
-    
-      <Marker
+
+       <Marker
         key={props.center}
         position={props.center}
-        onClick={() => props.onMarkerClick(marker)}
-      >
-
+      >       
       </Marker>
 
-    {props.driverdetails.map((marker, index) => (
-      <Marker
-        key={index}
-        icon={{url:'img/taxi.png',scaledSize: new google.maps.Size(31, 43)}}
-        position={{lat:marker.lat,lng:marker.lng}}
-        onClick={() => props.onMarkerClick(marker)}
-      >
-        {/*
-          Show info window only if the 'showInfo' key of the marker is true.
-          That is, when the Marker pin has been clicked and 'onCloseClick' has been
-          Successfully fired.
-        */}
-        {marker.showInfo && (
-          <InfoWindow onCloseClick={() => props.onMarkerClose(marker)}>
-            <div>{marker.DriverName}</div>
-          </InfoWindow>
-        )}
-      </Marker>
-    ))}
-
+      <C Zoom={props.Zoom}/>
 
       {props.directions && <DirectionsRenderer directions={props.directions} />}
 
   </GoogleMap>
 ));
+
 
 
 class GeolocationExample extends Component {
@@ -84,12 +76,13 @@ class GeolocationExample extends Component {
           content: null,
           origin:null,
           directions: null,
-          A:this.props.driverdetails,
-          B:null
+          B:null,
+          Zoom:12
          };
 
-          this.handleMarkerClick = this.handleMarkerClick.bind(this);
-          this.handleMarkerClose = this.handleMarkerClose.bind(this);
+
+        this.handleMapMounted = this.handleMapMounted.bind(this);
+            this.handleZoomChanged = this.handleZoomChanged.bind(this);
     }
 
  
@@ -126,32 +119,16 @@ class GeolocationExample extends Component {
     }
 }
 
-  handleMarkerClick(targetMarker) {
-    this.setState({
-      A: this.state.A.map(marker => {
-        if (marker === targetMarker) {
-          return {
-            ...marker,
-            showInfo: true,
-          };
-        }
-        return marker;
-      })
-    });
+
+handleMapMounted(map) {
+    this._map = map;
   }
 
-  handleMarkerClose(targetMarker) {
-    this.setState({
-      A: this.state.A.map(marker => {
-        if (marker === targetMarker) {
-          return {
-            ...marker,
-            showInfo: false,
-          };
-        }
-        return marker;
-      }),
-    });
+  handleZoomChanged() {
+    const nextZoom = this._map.getZoom();
+      this.setState({
+        Zoom: nextZoom,
+      });
   }
   
 
@@ -171,13 +148,14 @@ class GeolocationExample extends Component {
         lng={this.state.lng}
         directions={this.state.directions}
         driverdetails={this.state.A}
-        onMarkerClick={this.handleMarkerClick}
-        onMarkerClose={this.handleMarkerClose}
+        onMapMounted={this.handleMapMounted}
+        onZoomChanged={this.handleZoomChanged}
+        Zoom={this.state.Zoom}
       />
+    
     );
   }
 }
-
 
 function mapStateToProps (state){
   return {
