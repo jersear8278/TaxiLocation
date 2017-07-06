@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Simple starter package for Redux with React and Babel support",
   "main": "index.js",
-  "homepage":"https://jersear8278.github.io/TaxiLocation/",
+  "homepage": "https://jersear8278.github.io/TaxiLocation/",
   "repository": "git@github.com:jersear8278/TaxiLocation.git",
   "scripts": {
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
     "test:watch": "npm run test -- --watch"
   },
-  "deploy":"npm run build&&gh-pages -d build",
+  "deploy": "npm run build&&gh-pages -d build",
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -20,6 +20,7 @@
     "babel-preset-react": "^6.1.18",
     "chai": "^3.5.0",
     "chai-jquery": "^2.0.0",
+    "gh-pages": "^1.0.0",
     "jquery": "^2.2.1",
     "jsdom": "^8.1.0",
     "mocha": "^2.4.5",
