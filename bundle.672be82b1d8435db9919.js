@@ -333,7 +333,7 @@ var DriverMarkers = function (_Component) {
             _lib.Marker,
             {
               key: index,
-              icon: { url: '/img/Taxi.PNG', scaledSize: new google.maps.Size(31, 43) },
+              icon: { url: '/img/Taxi.png', scaledSize: new google.maps.Size(31, 43) },
               position: { lat: marker.lat, lng: marker.lng },
               onClick: function onClick() {
                 return _this2.handleMarkerClick(marker);
